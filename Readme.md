@@ -19,3 +19,6 @@ https://github.com/comfyanonymous/ComfyUI
 https://github.com/Mukosame/Anime2Sketch
 https://github.com/FFmpeg/FFmpeg
 https://github.com/Comfy-Org/comfy-cli
+模型文件转自：
+https://huggingface.co/stabilityai/stable-diffusion-3.5-large
+https://drive.google.com/drive/folders/1Srf-WYUixK0wiUddc9y3pNKHHno5PN6R?usp=sharing
