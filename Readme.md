@@ -13,11 +13,9 @@ setup2.cmd运行完成后运行setup3.cmd即可完成。
 安装完成后请运行start.bat。
 大致如此，如果出现问题请发issues。有时间玩会回复的（学业繁忙，但有空会回复）
 感谢：
-
-
-
-
 本项目引用了以下项目：
-
-
-
+https://github.com/OldDriver258/frame_extractor
+https://github.com/comfyanonymous/ComfyUI
+https://github.com/Mukosame/Anime2Sketch
+https://github.com/FFmpeg/FFmpeg
+https://github.com/Comfy-Org/comfy-cli
