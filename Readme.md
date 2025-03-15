@@ -12,6 +12,7 @@ ffmpeg ： https://ffmpeg.org/download.html
 setup2.cmd运行完成后运行setup3.cmd即可完成。
 安装完成后请运行start.bat。
 大致如此，如果出现问题请发issues。有时间玩会回复的（学业繁忙，但有空会回复）
+请手动将start.bat中的python路径换为自己的
 感谢：
 本项目引用了以下项目：
 https://github.com/OldDriver258/frame_extractor
