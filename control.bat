@@ -1,16 +1,13 @@
 @echo off
-setlocal EnableDelayedExpansion
+setlocal enabledelayedexpansion
 
 :: 项目基础目录
 set "BASE_DIR=%~dp0"
 
-:: 创建输出目录
-if not exist "%BASE_DIR%output" mkdir "%BASE_DIR%output"
-
 :menu
 cls
 echo.
-echo  ============ 垃圾工厂 AI 视频二创 ============
+echo  ===== 垃圾工厂流程控制 =====
 echo.
 echo  1. 视频拆帧 (提取所有帧)
 echo  2. 图片转线稿

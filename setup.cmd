@@ -93,10 +93,10 @@ echo 正在下载 Stable Diffusion 3.5 模型...
 set "MODEL_DIR=%IMAGE_RECREATION_DIR%\ComfyUI\models\checkpoints"
 if not exist "%MODEL_DIR%" mkdir "%MODEL_DIR%"
 
-curl -L -o "%MODEL_DIR%\stable-diffusion-3.5.safetensors" https://huggingface.co/stabilityai/stable-diffusion-3-medium/resolve/main/sd3_medium.safetensors
+curl -L -o "%MODEL_DIR%\stable-diffusion-3.5.safetensors" https://huggingface.co/stabilityai/stable-diffusion-3.5-large/resolve/main/sd3_5_large.safetensors
 if errorlevel 1 (
     echo 模型下载失败，请手动下载:
-    echo https://huggingface.co/stabilityai/stable-diffusion-3-medium/resolve/main/sd3_medium.safetensors
+    echo https://huggingface.co/stabilityai/stable-diffusion-3.5-large/resolve/main/sd3_5_large.safetensors
     echo 并保存到: %MODEL_DIR%
 )
 
