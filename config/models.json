@@ -1,0 +1,35 @@
+{
+  "models": {
+    "anime2sketch": {
+      "name": "Anime2Sketch",
+      "description": "动漫风格转素描，适合所有动漫/实拍视频",
+      "input_size": [ 512, 512 ],
+      "source": "https://github.com/Mukosame/Anime2Sketch"
+    },
+    "animeganv2": {
+      "name": "AnimeGANv2",
+      "description": "照片转动漫风格，支持3种风格（paprika/face1/face2）",
+      "input_size": [ 512, 512 ],
+      "styles": {
+        "paprika": "通用动漫风格",
+        "face1": "人像风格1（柔和）",
+        "face2": "人像风格2（锐利）"
+      },
+      "source": "https://github.com/bryandlee/animegan2-pytorch"
+    },
+    "stable_diffusion_3.5": {
+      "name": "Stable Diffusion 3.5 Large",
+      "description": "强大的文本引导图像生成模型，支持多种风格二次创作",
+      "input_size": [ 1024, 1024 ],
+      "requirements": "建议10GB以上VRAM，首次运行需下载约10GB模型文件",
+      "features": [ "文本引导", "风格迁移", "创意重绘" ],
+      "styles": [ "anime_style", "oil_painting", "cyberpunk", "pixel_art", "realistic", "cartoon" ],
+      "source": "https://huggingface.co/stabilityai/stable-diffusion-3.5-large"
+    }
+  },
+  "default": {
+    "fps": 30,
+    "img_format": "jpg",
+    "video_codec": "libx264"
+  }
+}

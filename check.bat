@@ -1,58 +1,69 @@
 @echo off
-setlocal enabledelayedexpansion
+echo ==============================================
+echo          Garbage Factories »·¾³¼ì²â
+echo ==============================================
 
-:: æ£€æŸ¥å¿…è¦çš„å·¥å…·
-echo æ­£åœ¨æ£€æŸ¥ç¯å¢ƒä¾èµ–...
+:: ¼ì²â Git
+echo [1/4] ¼ì²â Git...
+where git >nul 2>nul
+if %errorLevel% equ 0 (
+    echo [¡Ì] Git ÒÑ°²×°:
+    git --version | findstr "version"
+) else (
+    echo [¡Á] Git Î´°²×°»òÎ´Ìí¼Óµ½»·¾³±äÁ¿£¬ÇëÏÈ°²×° Git£¡
+    pause
+    exit /b 1
+)
+
+:: ¼ì²â Python 3.10+
 echo.
-
-:: æ£€æŸ¥ Git
-where git >nul 2>&1
-if errorlevel 1 (
-    echo [é”™è¯¯] Git æœªå®‰è£…æˆ–æœªæ·»åŠ åˆ°ç¯å¢ƒå˜é‡
-    echo è¯·ä» https://git-scm.com/downloads å®‰è£… Git
+echo [2/4] ¼ì²â Python 3.10+...
+where python >nul 2>nul
+if %errorLevel% equ 0 (
+    for /f "delims=" %%v in ('python --version 2^>^&1 ^| findstr /i "python 3.10"') do (
+        set "py_ver=%%v"
+    )
+    if defined py_ver (
+        echo [¡Ì] Python °æ±¾·ûºÏÒªÇó: %py_ver%
+    ) else (
+        echo [¡Á] Python °æ±¾Ğè 3.10+£¬µ±Ç°°æ±¾:
+        python --version
+        pause
+        exit /b 1
+    )
 ) else (
-    echo [æˆåŠŸ] Git å·²å®‰è£…
+    echo [¡Á] Python Î´°²×°»òÎ´Ìí¼Óµ½»·¾³±äÁ¿£¬ÇëÏÈ°²×° Python 3.10£¡
+    pause
+    exit /b 1
 )
 
-:: æ£€æŸ¥ Python
-where python >nul 2>&1
-if errorlevel 1 (
-    echo [é”™è¯¯] Python æœªå®‰è£…æˆ–æœªæ·»åŠ åˆ°ç¯å¢ƒå˜é‡
-    echo è¯·ä» https://www.python.org/downloads/ å®‰è£… Python 3.10
-) else (
-    python -c "import sys; print('[æˆåŠŸ] Python ç‰ˆæœ¬:', sys.version)" 2>nul
-)
-
-:: æ£€æŸ¥ FFmpeg
-where ffmpeg >nul 2>&1
-if errorlevel 1 (
-    echo [é”™è¯¯] FFmpeg æœªå®‰è£…æˆ–æœªæ·»åŠ åˆ°ç¯å¢ƒå˜é‡
-    echo è¯·ä» https://ffmpeg.org/download.html å®‰è£… FFmpeg
-) else (
-    echo [æˆåŠŸ] FFmpeg å·²å®‰è£…
-)
-
-:: æ£€æŸ¥ Miniconda
-where conda >nul 2>&1
-if errorlevel 1 (
-    echo [è­¦å‘Š] Miniconda æœªå®‰è£…
-    echo è¿è¡Œ download.bat å¯è‡ªåŠ¨å®‰è£… Miniconda
-) else (
-    echo [æˆåŠŸ] Miniconda å·²å®‰è£…
-)
-
-:: æ£€æŸ¥ Python ä¾èµ–
+:: ¼ì²â FFmpeg
 echo.
-echo æ­£åœ¨æ£€æŸ¥ Python ä¾èµ–...
-pip list | findstr /i "torch opencv-python comfy-cli Pillow" >nul
-if errorlevel 1 (
-    echo [è­¦å‘Š] éƒ¨åˆ† Python ä¾èµ–æœªå®‰è£…
-    echo è¿è¡Œ setup.cmd å®‰è£…æ‰€æœ‰ä¾èµ–
+echo [3/4] ¼ì²â FFmpeg...
+where ffmpeg >nul 2>nul
+if %errorLevel% equ 0 (
+    echo [¡Ì] FFmpeg ÒÑ°²×°:
+    ffmpeg -version | findstr "ffmpeg version"
 ) else (
-    echo [æˆåŠŸ] Python ä¾èµ–å·²å®‰è£…
+    echo [¡Á] FFmpeg Î´°²×°»òÎ´Ìí¼Óµ½»·¾³±äÁ¿£¬ÇëÏÈ°²×° FFmpeg£¡
+    pause
+    exit /b 1
+)
+
+:: ¼ì²âÒÀÀµ¿â£¨ºËĞÄ¿âÊ¾Àı£©
+echo.
+echo [4/4] ¼ì²âºËĞÄ Python ÒÀÀµ...
+python -c "import cv2, torch, numpy, pillow, json" >nul 2>nul
+if %errorLevel% equ 0 (
+    echo [¡Ì] »ù´¡ÒÀÀµÒÑ°²×°
+) else (
+    echo [¡Á] ²¿·Ö»ù´¡ÒÀÀµÈ±Ê§£¬ÇëÔËĞĞ setup.cmd °²×°£¡
+    pause
+    exit /b 1
 )
 
 echo.
-echo ç¯å¢ƒæ£€æŸ¥å®Œæˆ
+echo ==============================================
+echo          »·¾³¼ì²âÍ¨¹ı£¬¿ÉÕı³£Æô¶¯ÏîÄ¿£¡
+echo ==============================================
 pause
-exit /b 0

@@ -1,0 +1,26 @@
+{
+  "anime_style": {
+    "description": "日式动漫风格，适合大多数场景",
+    "positive_prompt": "anime style, vibrant colors, detailed shading, dynamic lighting, key visual, high contrast, sharp focus, professional animation, clean lines, manga influence, expressive characters"
+  },
+  "oil_painting": {
+    "description": "油画风格，艺术感强",
+    "positive_prompt": "oil painting, impressionist style, brush strokes, vibrant colors, artistic, textured, painterly, museum quality, masterpiece, rich tones, dynamic lighting"
+  },
+  "cyberpunk": {
+    "description": "赛博朋克风格，未来科技感",
+    "positive_prompt": "cyberpunk, neon lights, futuristic city, dystopian, high tech, low life, rain, holograms, neon colors, cybernetic enhancements, futuristic fashion, blade runner inspired"
+  },
+  "pixel_art": {
+    "description": "像素艺术风格，复古游戏感",
+    "positive_prompt": "pixel art, retro game style, 8-bit, 16-bit, vibrant colors, pixel perfect, clean edges, nostalgic, sprite art, detailed pixels, game asset"
+  },
+  "realistic": {
+    "description": "超写实风格，接近照片质量",
+    "positive_prompt": "hyperrealistic, photorealistic, ultra detailed, 8k resolution, sharp focus, realistic lighting, natural colors, professional photography, intricate details, lifelike textures"
+  },
+  "cartoon": {
+    "description": "卡通风格，类似迪士尼动画",
+    "positive_prompt": "cartoon style, disney animation, vibrant colors, soft edges, playful, exaggerated features, expressive, clean lines, animated, cheerful, whimsical"
+  }
+}

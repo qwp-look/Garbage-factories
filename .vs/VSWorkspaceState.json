@@ -1,0 +1,12 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\config",
+    "\\input",
+    "\\models",
+    "\\output",
+    "\\utils"
+  ],
+  "SelectedNode": "\\models\\stable_diffusion_3_5.py",
+  "PreviewInSolutionExplorer": false
+}

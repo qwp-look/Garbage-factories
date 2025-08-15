@@ -1,92 +1,39 @@
 @echo off
-setlocal enabledelayedexpansion
-
-:: é¡¹ç›®åŸºç¡€ç›®å½•
-set "BASE_DIR=%~dp0"
-
-:menu
-cls
+echo ==============================================
+echo          Æô¶¯ Garbage Factories
+echo ==============================================
+echo ÌáÊ¾£ºÇëÏÈ½«Ô­Ê¼ÊÓÆµ·ÅÈë input/ Ä¿Â¼£¬²¢ÃüÃûÎª input.mp4
+echo £¨»òĞŞ¸Ä main.py ÖĞµÄÊäÈëÂ·¾¶£©
 echo.
-echo  ===== åƒåœ¾å·¥å‚æµç¨‹æ§åˆ¶ =====
-echo.
-echo  1. è§†é¢‘æ‹†å¸§ (æå–æ‰€æœ‰å¸§)
-echo  2. å›¾ç‰‡è½¬çº¿ç¨¿
-echo  3. AIé‡ç»˜çº¿ç¨¿
-echo  4. åˆæˆè§†é¢‘
-echo  5. å…¨è‡ªåŠ¨å¤„ç†
-echo  0. é€€å‡º
-echo.
-set /p choice=è¯·é€‰æ‹©æ“ä½œ (0-5): 
 
-if "%choice%"=="1" goto extract_frames
-if "%choice%"=="2" goto convert_sketch
-if "%choice%"=="3" goto recreate_images
-if "%choice%"=="4" goto synthesize_video
-if "%choice%"=="5" goto full_process
-if "%choice%"=="0" exit /b 0
-
-goto menu
-
-:extract_frames
-echo æ­£åœ¨æ‰§è¡Œè§†é¢‘æ‹†å¸§...
-python "%BASE_DIR%Frame_Extraction\frame_extractor\extractor.py" -v "%BASE_DIR%input" -o "%BASE_DIR%output\frames"
-if errorlevel 1 (
-    echo æ‹†å¸§å¤±è´¥ï¼Œè¯·æ£€æŸ¥è¾“å…¥è§†é¢‘
-) else (
-    echo æ‹†å¸§å®Œæˆï¼å¸§ä¿å­˜åœ¨: %BASE_DIR%output\frames
-)
-pause
-goto menu
-
-:convert_sketch
-echo æ­£åœ¨è½¬æ¢ä¸ºçº¿ç¨¿...
-python "%BASE_DIR%Sketch_Conversion\Anime2Sketch\test.py" --dataroot "%BASE_DIR%output\frames" --load_size 512 --output_dir "%BASE_DIR%output\sketches"
-if errorlevel 1 (
-    echo çº¿ç¨¿è½¬æ¢å¤±è´¥
-) else (
-    echo çº¿ç¨¿è½¬æ¢å®Œæˆï¼ä¿å­˜åœ¨: %BASE_DIR%output\sketches
-)
-pause
-goto menu
-
-:recreate_images
-echo æ­£åœ¨ä½¿ç”¨AIé‡ç»˜çº¿ç¨¿...
-comfy launch --workspace "%BASE_DIR%ComfyUI" --input_dir "%BASE_DIR%output\sketches" --output "%BASE_DIR%output\recreated" --model stabilityai/stable-diffusion-3.5-large
-if errorlevel 1 (
-    echo AIé‡ç»˜å¤±è´¥
-) else (
-    echo AIé‡ç»˜å®Œæˆï¼ä¿å­˜åœ¨: %BASE_DIR%output\recreated
-)
-pause
-goto menu
-
-:synthesize_video
-echo æ­£åœ¨åˆæˆè§†é¢‘...
-set "ffmpeg_path="
-where ffmpeg >nul && set ffmpeg_path=ffmpeg
-
-if not defined ffmpeg_path (
-    if exist "%BASE_DIR%Video_Synthesis\FFmpeg-Builds\bin\ffmpeg.exe" (
-        set "ffmpeg_path=%BASE_DIR%Video_Synthesis\FFmpeg-Builds\bin\ffmpeg.exe"
+:: ÏÈ¼ì²â»·¾³£¬ÔÙÆô¶¯ÍêÕûÁ÷³Ì
+call check.bat
+if %errorLevel% equ 0 (
+    echo.
+    echo ÇëÑ¡ÔñAIÄ£ĞÍ£º
+    echo 1. Anime2Sketch£¨ËØÃè·ç¸ñ£©
+    echo 2. AnimeGANv2£¨¶¯Âş·ç¸ñ£©
+    echo 3. Stable Diffusion 3.5£¨´´Òâ·ç¸ñ£©
+    set /p model_choice=ÇëÊäÈëÄ£ĞÍÑ¡Ïî£¨1-3£©£º
+    
+    if "%model_choice%"=="1" (
+        set model=anime2sketch
+    ) else if "%model_choice%"=="2" (
+        set model=animeganv2
+    ) else if "%model_choice%"=="3" (
+        set model=stable_diffusion_3.5
     ) else (
-        echo æ‰¾ä¸åˆ°FFmpegå¯æ‰§è¡Œæ–‡ä»¶
+        echo ÎŞĞ§Ä£ĞÍÑ¡Ïî£¡
         pause
-        goto menu
+        exit /b 1
     )
-)
-
-%ffmpeg_path% -framerate 24 -i "%BASE_DIR%output\recreated\frame%%04d.png" -c:v libx264 -pix_fmt yuv420p "%BASE_DIR%output\final_video.mp4" -y
-if errorlevel 1 (
-    echo è§†é¢‘åˆæˆå¤±è´¥
+    
+    echo ¿ªÊ¼ÍêÕûÁ÷³Ì...
+    python main.py --action full --input_video input/input.mp4 --frame_dir output/frames --processed_dir output/processed --output_video output/final.mp4 --model %model% --fps 30
+    echo.
+    echo ´¦ÀíÍê³É£¡×îÖÕÊÓÆµ£ºoutput/final.mp4
 ) else (
-    echo è§†é¢‘åˆæˆå®Œæˆï¼ä¿å­˜ä¸º: %BASE_DIR%output\final_video.mp4
+    echo »·¾³¼ì²âÊ§°Ü£¬ÎŞ·¨Æô¶¯ÏîÄ¿£¡
 )
-pause
-goto menu
 
-:full_process
-call :extract_frames
-call :convert_sketch
-call :recreate_images
-call :synthesize_video
-goto menu
+pause

@@ -1,92 +1,74 @@
 @echo off
-setlocal enabledelayedexpansion
-
-:: é¡¹ç›®åŸºç¡€ç›®å½•
-set "BASE_DIR=%~dp0"
-
-:menu
 cls
-echo.
-echo  ===== åƒåœ¾å·¥å‚æµç¨‹æ§åˆ¶ =====
-echo.
-echo  1. è§†é¢‘æ‹†å¸§ (æå–æ‰€æœ‰å¸§)
-echo  2. å›¾ç‰‡è½¬çº¿ç¨¿
-echo  3. AIé‡ç»˜çº¿ç¨¿
-echo  4. åˆæˆè§†é¢‘
-echo  5. å…¨è‡ªåŠ¨å¤„ç†
-echo  0. é€€å‡º
-echo.
-set /p choice=è¯·é€‰æ‹©æ“ä½œ (0-5): 
+echo ==============================================
+echo          Garbage Factories Á÷³Ì¿ØÖÆ
+echo ==============================================
+echo ÇëÑ¡Ôñ²Ù×÷£º
+echo 1. ½ö²ğÖ¡£¨ÊäÈëÊÓÆµ ¡ú Í¼Æ¬ĞòÁĞ£©
+echo 2. ½ö AI ´¦Àí£¨Í¼Æ¬ĞòÁĞ ¡ú ´¦ÀíºóÍ¼Æ¬£©
+echo 3. ½öºÏ³ÉÊÓÆµ£¨´¦ÀíºóÍ¼Æ¬ ¡ú Êä³öÊÓÆµ£©
+echo 4. Ò»¼üÍêÕûÁ÷³Ì£¨²ğÖ¡¡úAI¡úºÏ³É£©
+echo 5. ÍË³ö
+echo ==============================================
+set /p choice=ÇëÊäÈëÑ¡Ïî£¨1-5£©£º
 
-if "%choice%"=="1" goto extract_frames
-if "%choice%"=="2" goto convert_sketch
-if "%choice%"=="3" goto recreate_images
-if "%choice%"=="4" goto synthesize_video
-if "%choice%"=="5" goto full_process
-if "%choice%"=="0" exit /b 0
-
-goto menu
-
-:extract_frames
-echo æ­£åœ¨æ‰§è¡Œè§†é¢‘æ‹†å¸§...
-python "%BASE_DIR%Frame_Extraction\frame_extractor\extractor.py" -v "%BASE_DIR%input" -o "%BASE_DIR%output\frames"
-if errorlevel 1 (
-    echo æ‹†å¸§å¤±è´¥ï¼Œè¯·æ£€æŸ¥è¾“å…¥è§†é¢‘
-) else (
-    echo æ‹†å¸§å®Œæˆï¼å¸§ä¿å­˜åœ¨: %BASE_DIR%output\frames
-)
-pause
-goto menu
-
-:convert_sketch
-echo æ­£åœ¨è½¬æ¢ä¸ºçº¿ç¨¿...
-python "%BASE_DIR%Sketch_Conversion\Anime2Sketch\test.py" --dataroot "%BASE_DIR%output\frames" --load_size 512 --output_dir "%BASE_DIR%output\sketches"
-if errorlevel 1 (
-    echo çº¿ç¨¿è½¬æ¢å¤±è´¥
-) else (
-    echo çº¿ç¨¿è½¬æ¢å®Œæˆï¼ä¿å­˜åœ¨: %BASE_DIR%output\sketches
-)
-pause
-goto menu
-
-:recreate_images
-echo æ­£åœ¨ä½¿ç”¨AIé‡ç»˜çº¿ç¨¿...
-comfy launch --workspace "%BASE_DIR%Image_Recreation\ComfyUI" --input_dir "%BASE_DIR%output\sketches" --output "%BASE_DIR%output\recreated" --model stabilityai/stable-diffusion-3.5-large
-if errorlevel 1 (
-    echo AIé‡ç»˜å¤±è´¥
-) else (
-    echo AIé‡ç»˜å®Œæˆï¼ä¿å­˜åœ¨: %BASE_DIR%output\recreated
-)
-pause
-goto menu
-
-:synthesize_video
-echo æ­£åœ¨åˆæˆè§†é¢‘...
-set "ffmpeg_path="
-where ffmpeg >nul && set ffmpeg_path=ffmpeg
-
-if not defined ffmpeg_path (
-    if exist "%BASE_DIR%Video_Synthesis\FFmpeg-Builds\bin\ffmpeg.exe" (
-        set "ffmpeg_path=%BASE_DIR%Video_Synthesis\FFmpeg-Builds\bin\ffmpeg.exe"
+if "%choice%"=="1" (
+    python main.py --action extract --input_video input/input.mp4 --frame_dir output/frames
+    echo ²ğÖ¡Íê³É£¬Í¼Æ¬±£´æÖÁ output/frames
+) else if "%choice%"=="2" (
+    echo ÇëÑ¡ÔñAIÄ£ĞÍ£º
+    echo 1. Anime2Sketch£¨ËØÃè·ç¸ñ£©
+    echo 2. AnimeGANv2£¨¶¯Âş·ç¸ñ£©
+    echo 3. Stable Diffusion 3.5£¨´´Òâ·ç¸ñ£©
+    set /p model_choice=ÇëÊäÈëÄ£ĞÍÑ¡Ïî£¨1-3£©£º
+    
+    if "%model_choice%"=="1" (
+        set model=anime2sketch
+    ) else if "%model_choice%"=="2" (
+        set model=animeganv2
+    ) else if "%model_choice%"=="3" (
+        set model=stable_diffusion_3.5
     ) else (
-        echo æ‰¾ä¸åˆ°FFmpegå¯æ‰§è¡Œæ–‡ä»¶
+        echo ÎŞĞ§Ä£ĞÍÑ¡Ïî£¡
         pause
-        goto menu
+        call control.bat
+        exit /b 1
     )
-)
-
-%ffmpeg_path% -framerate 24 -i "%BASE_DIR%output\recreated\frame%%04d.png" -c:v libx264 -pix_fmt yuv420p "%BASE_DIR%output\final_video.mp4" -y
-if errorlevel 1 (
-    echo è§†é¢‘åˆæˆå¤±è´¥
+    
+    python main.py --action ai_process --frame_dir output/frames --processed_dir output/processed --model %model%
+    echo AI ´¦ÀíÍê³É£¬Í¼Æ¬±£´æÖÁ output/processed
+) else if "%choice%"=="3" (
+    python main.py --action synthesize --processed_dir output/processed --output_video output/final.mp4 --fps 30
+    echo ÊÓÆµºÏ³ÉÍê³É£¬ÎÄ¼ş±£´æÖÁ output/final.mp4
+) else if "%choice%"=="4" (
+    echo ÇëÑ¡ÔñAIÄ£ĞÍ£º
+    echo 1. Anime2Sketch£¨ËØÃè·ç¸ñ£©
+    echo 2. AnimeGANv2£¨¶¯Âş·ç¸ñ£©
+    echo 3. Stable Diffusion 3.5£¨´´Òâ·ç¸ñ£©
+    set /p model_choice=ÇëÊäÈëÄ£ĞÍÑ¡Ïî£¨1-3£©£º
+    
+    if "%model_choice%"=="1" (
+        set model=anime2sketch
+    ) else if "%model_choice%"=="2" (
+        set model=animeganv2
+    ) else if "%model_choice%"=="3" (
+        set model=stable_diffusion_3.5
+    ) else (
+        echo ÎŞĞ§Ä£ĞÍÑ¡Ïî£¡
+        pause
+        call control.bat
+        exit /b 1
+    )
+    
+    python main.py --action full --input_video input/input.mp4 --frame_dir output/frames --processed_dir output/processed --output_video output/final.mp4 --model %model% --fps 30
+    echo ÍêÕûÁ÷³ÌÍê³É£¬×îÖÕÊÓÆµ±£´æÖÁ output/final.mp4
+) else if "%choice%"=="5" (
+    echo ÍË³ö³ÌĞò...
+    exit /b 0
 ) else (
-    echo è§†é¢‘åˆæˆå®Œæˆï¼ä¿å­˜ä¸º: %BASE_DIR%output\final_video.mp4
+    echo ÎŞĞ§Ñ¡Ïî£¬ÇëÖØĞÂÊäÈë£¡
+    pause
+    call control.bat
 )
-pause
-goto menu
 
-:full_process
-call :extract_frames
-call :convert_sketch
-call :recreate_images
-call :synthesize_video
-goto menu
+pause

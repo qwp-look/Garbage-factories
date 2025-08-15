@@ -1,109 +1,27 @@
 @echo off
-setlocal enabledelayedexpansion
+echo ==============================================
+echo          Garbage Factories ÒÀÀµ°²×°
+echo ==============================================
 
-:: å®šä¹‰åŸºç¡€ç›®å½•
-set "BASE_DIR=%~dp0"
+:: Éı¼¶ pip
+echo [1/2] Éı¼¶ pip...
+python -m pip install --upgrade pip -q
 
-:: åˆ›å»ºåŠŸèƒ½æ–‡ä»¶å¤¹
-set "FRAME_EXTRACTION_DIR=%BASE_DIR%Frame_Extraction"
-set "SKETCH_CONVERSION_DIR=%BASE_DIR%Sketch_Conversion"
-set "IMAGE_RECREATION_DIR=%BASE_DIR%Image_Recreation"
-set "VIDEO_SYNTHESIS_DIR=%BASE_DIR%Video_Synthesis"
-
-md "%FRAME_EXTRACTION_DIR%" 2>nul
-md "%SKETCH_CONVERSION_DIR%" 2>nul
-md "%IMAGE_RECREATION_DIR%" 2>nul
-md "%VIDEO_SYNTHESIS_DIR%" 2>nul
-
-:: æ£€æŸ¥ Python æ˜¯å¦å·²å®‰è£…
-python -V >nul 2>&1
-if errorlevel 1 (
-    echo Python not found. Please install Python 3.10 first.
+:: °²×°ÒÀÀµ£¨´Ó requirement.txt ¶ÁÈ¡£©
+echo [2/2] °²×°ÏîÄ¿ÒÀÀµ...
+if exist requirement.txt (
+    python -m pip install -r requirement.txt -q
+    if %errorLevel% equ 0 (
+        echo [¡Ì] ËùÓĞÒÀÀµ°²×°Íê³É£¡
+    ) else (
+        echo [¡Á] ÒÀÀµ°²×°Ê§°Ü£¬Çë¼ì²éÍøÂç»ò requirement.txt ÎÄ¼ş£¡
+        pause
+        exit /b 1
+    )
+) else (
+    echo [¡Á] requirement.txt ÎÄ¼ş²»´æÔÚ£¡
     pause
     exit /b 1
 )
 
-:: å…‹éš† frame_extractor é¡¹ç›®
-echo Cloning frame_extractor repository...
-if not exist "%FRAME_EXTRACTION_DIR%\frame_extractor" (
-    git clone https://github.com/OldDriver258/frame_extractor.git "%FRAME_EXTRACTION_DIR%\frame_extractor"
-    if errorlevel 1 (
-        echo Failed to clone frame_extractor.
-        exit /b 1
-    )
-)
-
-:: å…‹éš† Anime2Sketch é¡¹ç›®
-echo Cloning Anime2Sketch repository...
-if not exist "%SKETCH_CONVERSION_DIR%\Anime2Sketch" (
-    git clone https://github.com/Mukosame/Anime2Sketch.git "%SKETCH_CONVERSION_DIR%\Anime2Sketch"
-    if errorlevel 1 (
-        echo Failed to clone Anime2Sketch.
-        exit /b 1
-    )
-)
-
-:: å…‹éš† ComfyUI é¡¹ç›®
-echo Cloning ComfyUI repository...
-if not exist "%IMAGE_RECREATION_DIR%\ComfyUI" (
-    git clone https://github.com/comfyanonymous/ComfyUI.git "%IMAGE_RECREATION_DIR%\ComfyUI"
-    if errorlevel 1 (
-        echo Failed to clone ComfyUI.
-        exit /b 1
-    )
-)
-
-:: å…‹éš† FFmpeg-Builds é¡¹ç›®
-echo Cloning FFmpeg-Builds repository...
-if not exist "%VIDEO_SYNTHESIS_DIR%\FFmpeg-Builds" (
-    git clone https://github.com/BtbN/FFmpeg-Builds.git "%VIDEO_SYNTHESIS_DIR%\FFmpeg-Builds"
-    if errorlevel 1 (
-        echo Failed to clone FFmpeg-Builds.
-        exit /b 1
-    )
-)
-
-:: é€‰æ‹© pip æº
-echo.
-echo è¯·é€‰æ‹© pip æºåŠ é€Ÿä¸‹è½½:
-echo 1. è±†ç“£æº (æ¨èå›½å†…ä½¿ç”¨)
-echo 2. æ¸…åå¤§å­¦æº
-echo 3. é˜¿é‡Œäº‘æº
-echo 4. å®˜æ–¹æº (å›½é™…ç”¨æˆ·)
-echo.
-set /p choice="è¯·è¾“å…¥é€‰é¡¹ (1-4): "
-set "PIP_SOURCE="
-if "%choice%"=="1" set "PIP_SOURCE= -i https://pypi.doubanio.com/simple/"
-if "%choice%"=="2" set "PIP_SOURCE= -i https://pypi.tuna.tsinghua.edu.cn/simple"
-if "%choice%"=="3" set "PIP_SOURCE= -i https://mirrors.aliyun.com/pypi/simple/"
-
-:: å®‰è£…ä¾èµ–
-echo.
-echo æ­£åœ¨å®‰è£… Python ä¾èµ–...
-cd /d "%BASE_DIR%"
-pip install %PIP_SOURCE% -r requirement.txt
-if errorlevel 1 (
-    echo ä¾èµ–å®‰è£…å¤±è´¥ï¼Œè¯·æ£€æŸ¥ç½‘ç»œè¿æ¥
-    exit /b 1
-)
-
-:: ä¸‹è½½ Stable Diffusion 3.5 æ¨¡å‹
-echo.
-echo æ­£åœ¨ä¸‹è½½ Stable Diffusion 3.5 æ¨¡å‹...
-set "MODEL_DIR=%IMAGE_RECREATION_DIR%\ComfyUI\models\checkpoints"
-if not exist "%MODEL_DIR%" mkdir "%MODEL_DIR%"
-
-curl -L -o "%MODEL_DIR%\stable-diffusion-3.5.safetensors" https://huggingface.co/stabilityai/stable-diffusion-3.5-large/resolve/main/sd3_5_large.safetensors
-if errorlevel 1 (
-    echo æ¨¡å‹ä¸‹è½½å¤±è´¥ï¼Œè¯·æ‰‹åŠ¨ä¸‹è½½:
-    echo https://huggingface.co/stabilityai/stable-diffusion-3.5-large/resolve/main/sd3_5_large.safetensors
-    echo å¹¶ä¿å­˜åˆ°: %MODEL_DIR%
-)
-
-echo.
-echo ===== å®‰è£…å®Œæˆ! =====
-echo è¯·å°†è¾“å…¥è§†é¢‘æ”¾å…¥ input æ–‡ä»¶å¤¹
-echo è¿è¡Œ start.bat å¼€å§‹å¤„ç†
-echo.
 pause
-exit /b 0
